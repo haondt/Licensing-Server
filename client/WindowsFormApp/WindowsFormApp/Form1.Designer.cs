@@ -53,6 +53,7 @@
 			// 
 			// HWIDTextBox
 			// 
+			this.HWIDTextBox.Enabled = false;
 			this.HWIDTextBox.Location = new System.Drawing.Point(187, 91);
 			this.HWIDTextBox.Name = "HWIDTextBox";
 			this.HWIDTextBox.Size = new System.Drawing.Size(380, 20);
