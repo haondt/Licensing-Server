@@ -331,3 +331,6 @@ ASALocalRun/
 
 # vim files
 .*.swp
+
+# key files
+server/*.txt
