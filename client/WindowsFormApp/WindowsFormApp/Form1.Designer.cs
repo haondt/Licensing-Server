@@ -38,6 +38,7 @@
 			this.HWIDVerificationLabel = new System.Windows.Forms.Label();
 			this.LoadLicenseFileButton = new System.Windows.Forms.Button();
 			this.openFileDialog1 = new System.Windows.Forms.OpenFileDialog();
+			this.ExpiryLabel = new System.Windows.Forms.Label();
 			this.SuspendLayout();
 			// 
 			// HWIDLabel
@@ -98,7 +99,7 @@
 			// SignatureVerificationLabel
 			// 
 			this.SignatureVerificationLabel.AutoSize = true;
-			this.SignatureVerificationLabel.Location = new System.Drawing.Point(353, 169);
+			this.SignatureVerificationLabel.Location = new System.Drawing.Point(303, 171);
 			this.SignatureVerificationLabel.Name = "SignatureVerificationLabel";
 			this.SignatureVerificationLabel.Size = new System.Drawing.Size(35, 13);
 			this.SignatureVerificationLabel.TabIndex = 3;
@@ -107,7 +108,7 @@
 			// HWIDVerificationLabel
 			// 
 			this.HWIDVerificationLabel.AutoSize = true;
-			this.HWIDVerificationLabel.Location = new System.Drawing.Point(353, 191);
+			this.HWIDVerificationLabel.Location = new System.Drawing.Point(303, 193);
 			this.HWIDVerificationLabel.Name = "HWIDVerificationLabel";
 			this.HWIDVerificationLabel.Size = new System.Drawing.Size(35, 13);
 			this.HWIDVerificationLabel.TabIndex = 3;
@@ -127,11 +128,21 @@
 			// 
 			this.openFileDialog1.FileName = "openFileDialog1";
 			// 
+			// ExpiryLabel
+			// 
+			this.ExpiryLabel.AutoSize = true;
+			this.ExpiryLabel.Location = new System.Drawing.Point(303, 217);
+			this.ExpiryLabel.Name = "ExpiryLabel";
+			this.ExpiryLabel.Size = new System.Drawing.Size(35, 13);
+			this.ExpiryLabel.TabIndex = 3;
+			this.ExpiryLabel.Text = "label1";
+			// 
 			// Form1
 			// 
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
 			this.ClientSize = new System.Drawing.Size(822, 351);
+			this.Controls.Add(this.ExpiryLabel);
 			this.Controls.Add(this.HWIDVerificationLabel);
 			this.Controls.Add(this.SignatureVerificationLabel);
 			this.Controls.Add(this.LicenseKeyButton);
@@ -160,6 +171,7 @@
         private System.Windows.Forms.Label HWIDVerificationLabel;
         private System.Windows.Forms.Button LoadLicenseFileButton;
 		private System.Windows.Forms.OpenFileDialog openFileDialog1;
+		private System.Windows.Forms.Label ExpiryLabel;
 	}
 }
 

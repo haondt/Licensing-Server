@@ -11,12 +11,14 @@ using System.Management;
 using System.IO;
 using Newtonsoft.Json.Linq;
 using System.Security.Cryptography;
+using System.Net;
 using Org.BouncyCastle.Crypto.Engines;
 using Org.BouncyCastle.Crypto.Encodings;
 using Org.BouncyCastle.Crypto;
 using Org.BouncyCastle.Crypto.Parameters;
 using Org.BouncyCastle.Security;
 using Org.BouncyCastle.OpenSsl;
+using System.Numerics;
 
 namespace WindowsFormApp
 {
@@ -30,6 +32,7 @@ namespace WindowsFormApp
             InitializeComponent();
             this.HWIDVerificationLabel.Text = "";
             this.SignatureVerificationLabel.Text = "";
+			this.ExpiryLabel.Text = "";
         }
 
         private void Label1_Click(object sender, EventArgs e)
@@ -83,6 +86,9 @@ namespace WindowsFormApp
                 this.SignatureVerificationLabel.Text = "Signature does not match license key";
                 this.SignatureVerificationLabel.ForeColor = Color.Red;
             }
+
+			// Get time stamp
+			this.ExpiryLabel.Text = "License will expire on: " + this.getExpiryDate(this.LicenseKeyTextBox.Text);
     
 
 
@@ -90,11 +96,37 @@ namespace WindowsFormApp
 
         private string getPublicKey()
         {
-            return File.ReadAllText(@"C:\Users\Noah Burghardt\Desktop\license_server\pyserver\pbKey.txt");
+			string uri = "http://10.48.32.119:8080/signature_key";
+			HttpWebRequest request = (HttpWebRequest)WebRequest.Create(uri);
+			request.AutomaticDecompression = DecompressionMethods.GZip | DecompressionMethods.Deflate;
+			using (HttpWebResponse response = (HttpWebResponse)request.GetResponse())
+			using (Stream stream = response.GetResponseStream())
+			using (StreamReader reader = new StreamReader(stream))
+			{
+				return reader.ReadToEnd();
+			}
         }
+
+		private string getExpiryDate(string licenseKey)
+		{
+			// Seperate last 8 digits as date string
+			string dateHex = licenseKey.Split('-')[2] + licenseKey.Split('-')[3];
+
+			// Convert to int
+			BigInteger timestamp = BigInteger.Parse(dateHex, System.Globalization.NumberStyles.HexNumber);
+
+			// convert to date
+			System.DateTime epoch = new DateTime(1970, 1, 1, 0, 0, 0, 0, System.DateTimeKind.Utc);
+			var expiry = epoch.AddSeconds((double) timestamp).ToLocalTime();
+			return expiry.ToLongDateString();
+		}
 
         private bool verifyHWID(string HWID, string licenseKey)
         {
+			// Seperate first 8 digits as HWID
+			string KeyHWIDHash = licenseKey.Split('-')[0] + licenseKey.Split('-')[1];
+
+			// Get hash of hwid
             string HWIDHash;
             using(System.Security.Cryptography.MD5 md5 = System.Security.Cryptography.MD5.Create())
             {
@@ -102,7 +134,17 @@ namespace WindowsFormApp
                 byte[] hashBytes = md5.ComputeHash(inputBytes);
                 HWIDHash = hashBytes.Aggregate(new StringBuilder(), (SB, hb) => SB.Append(hb.ToString("x2"))).ToString();
             }
-            return HWIDHash.CompareTo(licenseKey) == 0;
+
+			// convert hash to integer
+			BigInteger HWIDHashInt = BigInteger.Parse(HWIDHash, System.Globalization.NumberStyles.HexNumber);
+
+			// mod to 8 hex digits
+			HWIDHashInt = (BigInteger) (HWIDHashInt % (BigInteger)(Math.Pow(2, 4 * 8)));
+
+			// convert back to hex and remove leading 0
+			HWIDHash = HWIDHashInt.ToString("X8").Substring(1);
+
+            return HWIDHash.CompareTo(KeyHWIDHash) == 0;
         }
 
         private void LoadLicenseFileButton_Click(object sender, EventArgs e)
@@ -151,11 +193,6 @@ namespace WindowsFormApp
             csp.ImportParameters(rsaParams);
 
             return csp.VerifyData(encodedLicenseKey, CryptoConfig.MapNameToOID("SHA256"), decodedSignature);
-
-            
-
-
-
         }
     }
 }
