@@ -12,9 +12,20 @@
 # Run instructions
 ## Server
 ```
-cd server
+Start server:
+screen
 sh run.sh
-python3 generator.py
+Ctrl-a d
+
+Kill server:
+screen -r
+Ctrl-c
+ps -a
+kill [pid]
+exit
+
+Generate license:
+python3 generator.py gen-license
 ```
 
 ## Client
