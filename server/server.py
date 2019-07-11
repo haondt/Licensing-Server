@@ -10,10 +10,14 @@ def show_helptext():
 		print('\t' + c)
 
 
-def generate_license_key():
+def generate_license_key(digits=0):
 	hwid = input("Hardware ID: ").strip()
 	key = hashlib.md5(hwid.encode()).hexdigest()
-	return key
+	if digits == 0:
+		return key
+	else:
+		return str(hex(int(key, 16) % 2 ** (digits*4)   ))[2:].upper()
+
 
 def generate_keys():
 	modlen = 2560
@@ -114,6 +118,7 @@ def main():
 				print('Key is not valid')
 				return
 	show_helptext()
+	print("modded license hash", generate_license_key(8))
 
 if __name__ == '__main__':
 	main()
