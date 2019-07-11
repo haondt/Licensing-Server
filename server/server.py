@@ -1,4 +1,4 @@
-import sys, base64, json, uuid, hashlib
+import sys, base64, json, uuid, hashlib, datetime
 from Crypto.PublicKey import RSA
 from Crypto.Signature import PKCS1_v1_5
 from Crypto.Hash import SHA256
@@ -12,12 +12,32 @@ def show_helptext():
 
 def generate_license_key(digits=0):
 	hwid = input("Hardware ID: ").strip()
-	key = hashlib.md5(hwid.encode()).hexdigest()
-	if digits == 0:
-		return key
-	else:
-		return str(hex(int(key, 16) % 2 ** (digits*4)   ))[2:].upper()
+	days = input("Number of days license is valid for: ").strip()
+	if days.isdigit():
+		days = int(days)
+		if days > 50 * 365:
+			days = 50*365
+			print("Defaulting to maximum period; 50 years")
 
+	else:
+		days = 30
+		print("Defaulted to 30 days.")
+
+	key = hashlib.md5(hwid.encode()).hexdigest()
+	if digits != 0:
+		key =  str(hex(int(key, 16) % 2 ** (digits*4)))[2:].upper()
+		key = key[:4] + "-" + key[4:]
+
+	now = datetime.datetime.now(datetime.timezone.utc)
+	future = now + datetime.timedelta(days=days)
+	future = future.timestamp()
+	future = min(int(future),int(2**32-1))
+	future = str(hex(int(future))).upper()[2:]
+	expiry = future[:4] + "-" + future[4:]
+
+	key += "-" + expiry
+
+	return key
 
 def generate_keys():
 	modlen = 2560
@@ -102,7 +122,7 @@ def main():
 				print("Unable to load keys. Run \'gen-keys\' to generate new keys")
 				return
 
-			lKey = generate_license_key()
+			lKey = generate_license_key(8)
 			signature = get_signature(lKey, pvKey)
 			save_license_file(lKey, signature)
 			print('New license exported to new_license.txt')
@@ -118,7 +138,6 @@ def main():
 				print('Key is not valid')
 				return
 	show_helptext()
-	print("modded license hash", generate_license_key(8))
 
 if __name__ == '__main__':
 	main()
