@@ -1,4 +1,5 @@
 # Licensing-Server
+A client-server app for generating licenses and verifying them offline.
 
 # Dependencies
 ## Python
