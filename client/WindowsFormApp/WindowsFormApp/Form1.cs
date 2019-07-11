@@ -141,8 +141,18 @@ namespace WindowsFormApp
 			// mod to 8 hex digits
 			HWIDHashInt = (BigInteger) (HWIDHashInt % (BigInteger)(Math.Pow(2, 4 * 8)));
 
-			// convert back to hex and remove leading 0
-			HWIDHash = HWIDHashInt.ToString("X8").Substring(1);
+			// convert back to hex
+			HWIDHash = HWIDHashInt.ToString("X");
+
+			// trim leading characters
+			while(HWIDHash.Length > 8)
+			{
+				HWIDHash = HWIDHash.Substring(1);
+			}
+
+			Console.WriteLine(HWIDHash);
+			Console.WriteLine(KeyHWIDHash);
+
 
             return HWIDHash.CompareTo(KeyHWIDHash) == 0;
         }
