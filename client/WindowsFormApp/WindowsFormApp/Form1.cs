@@ -107,8 +107,16 @@ namespace WindowsFormApp
 
         private void LoadLicenseFileButton_Click(object sender, EventArgs e)
         {
+			if (this.openFileDialog1.ShowDialog() == DialogResult.OK)
+			{
+				string licenseJson = this.getLicenseKeyJson(openFileDialog1.FileName);
+
+				JObject license = JObject.Parse(licenseJson);
+				this.LicenseKeyTextBox.Text = license["license_key"].ToString();
+				this.signature = license["signature"].ToString();
+			}
             // License key that is valid, matches computer HWID and has matching signature
-            string licenseJson = this.getLicenseKeyJson(@"C:\Users\Noah Burghardt\Desktop\license_server\pyserver\good_license.txt");
+            //string licenseJson = this.getLicenseKeyJson(@"C:\Users\Noah Burghardt\Desktop\license_server\pyserver\good_license.txt");
 
             // License key that was created for a different computer, and they just manually changed the HWID in the license file
             //string licenseJson = this.getLicenseKeyJson(@"C:\Users\Noah Burghardt\Desktop\license_server\pyserver\tampered_license.txt");
@@ -119,9 +127,6 @@ namespace WindowsFormApp
             // License key that matches computer HWID and has matching signature but was invalidated by the server
             //string licenseJson = this.getLicenseKeyJson(@"C:\Users\Noah Burghardt\Desktop\license_server\pyserver\invalid_license.txt");
 
-            JObject license = JObject.Parse(licenseJson);
-            this.LicenseKeyTextBox.Text = license["license_key"].ToString();
-            this.signature = license["signature"].ToString();
         }
 
         private string getLicenseKeyJson(string location)
