@@ -95,6 +95,19 @@ namespace WindowsFormApp
         }
 
         private string getPublicKey()
+		{
+			return @"-----BEGIN PUBLIC KEY-----
+				MIIBYjANBgkqhkiG9w0BAQEFAAOCAU8AMIIBSgKCAUEA2NNNpjIHbh4Nj6rwoCDs
+				kLqapFwErz266pfGs05570mXwB1z2oGSfRzKeYFswQa+SMNLkLTDiylfL/XGdoI9
+				olTBcScsLTkB+/qnThLRZ1cZsjtAZ5QN68T3tfR6iSzNX6YPuxw+wGah4uuDuZ5C
+				Jail7lhMQcKZ4WuNJ17MrTs6OwSPWd3bxuqGcq9tUHeHDGC23rFPMNH0NJZx6+tr
+				8131vac2tDEa26Dq62IoiY79NbhKSUnz1B135jATBeZkIFevAuZT05kwNP7klTKL
+				4iDMjIJwq7IQBtXUJk1VaPA+svCht7/tXDk3yr0wTi5z6hm8RjUEQ6MnflXUOhmi
+				hLvoMJT0Mke6QcYnwHVciI5M2FiXRXYaMTMuShbQPwB/H+WPJ29yGEx4Na2XoeLo
+				qoPeYnUY216vTVGq2CiJ0/cCAwEAAQ==
+				-----END PUBLIC KEY-----";
+		}
+		private string getPublickeyFromServer()
         {
 			string uri = "http://10.48.32.119:8080/signature_key";
 			HttpWebRequest request = (HttpWebRequest)WebRequest.Create(uri);
@@ -167,17 +180,6 @@ namespace WindowsFormApp
 				this.LicenseKeyTextBox.Text = license["license_key"].ToString();
 				this.signature = license["signature"].ToString();
 			}
-            // License key that is valid, matches computer HWID and has matching signature
-            //string licenseJson = this.getLicenseKeyJson(@"C:\Users\Noah Burghardt\Desktop\license_server\pyserver\good_license.txt");
-
-            // License key that was created for a different computer, and they just manually changed the HWID in the license file
-            //string licenseJson = this.getLicenseKeyJson(@"C:\Users\Noah Burghardt\Desktop\license_server\pyserver\tampered_license.txt");
-
-            // License key that is valid but was generated for a different computer
-            //string licenseJson = this.getLicenseKeyJson(@"C:\Users\Noah Burghardt\Desktop\license_server\pyserver\HWID_license.txt");
-
-            // License key that matches computer HWID and has matching signature but was invalidated by the server
-            //string licenseJson = this.getLicenseKeyJson(@"C:\Users\Noah Burghardt\Desktop\license_server\pyserver\invalid_license.txt");
 
         }
 
